@@ -151,12 +151,12 @@
     <!-- Graphical Representations -->
     <div class="card">
         <h3>Power vs Voltage (P-V) Curve</h3>
-        <div class="graph">[P-V Graph Placeholder]</div>
+        <div class="graph" id="pvGraph">[P-V Graph Placeholder]</div>
     </div>
 
     <div class="card">
         <h3>Current vs Voltage (I-V) Curve</h3>
-        <div class="graph">[I-V Graph Placeholder]</div>
+        <div class="graph" id="ivGraph">[I-V Graph Placeholder]</div>
     </div>
 
     <!-- Efficiency -->
@@ -172,39 +172,126 @@
         <h3>Adjust Light Intensity (Halogen Bulbs)</h3>
         <div class="slider-container">
             <label>Bulb 1 Intensity</label>
-            <input type="range" min="0" max="100" value="50">
+            <input type="range" min="0" max="100" value="50" id="bulb1">
         </div>
         <div class="slider-container">
             <label>Bulb 2 Intensity</label>
-            <input type="range" min="0" max="100" value="50">
+            <input type="range" min="0" max="100" value="50" id="bulb2">
         </div>
         <div class="slider-container">
             <label>Bulb 3 Intensity</label>
-            <input type="range" min="0" max="100" value="50">
+            <input type="range" min="0" max="100" value="50" id="bulb3">
         </div>
         <div class="slider-container">
             <label>Bulb 4 Intensity</label>
-            <input type="range" min="0" max="100" value="50">
+            <input type="range" min="0" max="100" value="50" id="bulb4">
         </div>
         <div class="slider-container">
             <label>Bulb 5 Intensity</label>
-            <input type="range" min="0" max="100" value="50">
+            <input type="range" min="0" max="100" value="50" id="bulb5">
         </div>
         <div class="slider-container">
             <label>Bulb 6 Intensity</label>
-            <input type="range" min="0" max="100" value="50">
+            <input type="range" min="0" max="100" value="50" id="bulb6">
         </div>
     </div>
 </div>
 
 <!-- Button Container -->
 <div class="button-container">
-    <button>Submit Data</button>
+    <button id="downloadPDF">Submit Data</button>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-    // Placeholder for future dynamic updates, like charts and real-time data
+    document.getElementById('downloadPDF').addEventListener('click', function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Add title with larger font size
+        doc.setFontSize(22);
+        doc.setTextColor(40, 116, 240);  // Nice blue color
+        doc.text('P&O MPPT Dashboard Report', 105, 20, null, null, 'center');
+
+        // Add a horizontal line
+        doc.setLineWidth(0.5);
+        doc.line(20, 25, 190, 25);  // Horizontal line below the title
+
+        // Section: Real-Time Data
+        doc.setFontSize(16);
+        doc.setTextColor(0);
+        doc.text('1. Real-Time Data', 10, 35);
+
+        doc.setFontSize(12);
+        doc.setTextColor(60);
+        doc.text('Input Voltage (V_in): 18.5 V', 20, 45);
+        doc.text('Input Current (I_in): 3.2 A', 20, 55);
+        doc.text('Output Voltage (V_out): 24.0 V', 20, 65);
+        doc.text('Output Current (I_out): 2.6 A', 20, 75);
+        doc.text('Power Input (P_in): 59.2 W', 20, 85);
+        doc.text('Power Output (P_out): 62.4 W', 20, 95);
+
+        // Section: MPPT Parameters
+        doc.setFontSize(16);
+        doc.setTextColor(0);
+        doc.text('2. MPPT Parameters', 10, 115);
+
+        doc.setFontSize(12);
+        doc.setTextColor(60);
+        doc.text('Duty Cycle (D): 0.85', 20, 125);
+        doc.text('Change in Voltage (ΔV): 0.1 V', 20, 135);
+        doc.text('Change in Power (ΔP): 1.5 W', 20, 145);
+        doc.text('Current MPP Voltage (V_MPP): 23.5 V', 20, 155);
+        doc.text('Current MPP Power (P_MPP): 61.0 W', 20, 165);
+
+        // Section: Bulb Intensities
+        doc.setFontSize(16);
+        doc.setTextColor(0);
+        doc.text('3. Halogen Bulb Intensities', 10, 185);
+
+        const bulb1 = document.getElementById('bulb1').value;
+        const bulb2 = document.getElementById('bulb2').value;
+        const bulb3 = document.getElementById('bulb3').value;
+        const bulb4 = document.getElementById('bulb4').value;
+        const bulb5 = document.getElementById('bulb5').value;
+        const bulb6 = document.getElementById('bulb6').value;
+
+        doc.setFontSize(12);
+        doc.setTextColor(60);
+        doc.text(`Bulb 1 Intensity: ${bulb1}%`, 20, 195);
+        doc.text(`Bulb 2 Intensity: ${bulb2}%`, 20, 205);
+        doc.text(`Bulb 3 Intensity: ${bulb3}%`, 20, 215);
+        doc.text(`Bulb 4 Intensity: ${bulb4}%`, 20, 225);
+        doc.text(`Bulb 5 Intensity: ${bulb5}%`, 20, 235);
+        doc.text(`Bulb 6 Intensity: ${bulb6}%`, 20, 245);
+
+        // Section: Graph Placeholders
+        doc.setFontSize(16);
+        doc.setTextColor(0);
+        doc.text('4. Graphical Data', 10, 265);
+
+        // P-V Graph Placeholder
+        doc.setFontSize(12);
+        doc.setTextColor(60);
+        doc.text('Power vs Voltage (P-V) Curve:', 20, 275);
+        doc.setDrawColor(60);
+        doc.rect(20, 280, 80, 40);  // Rectangular box for P-V Graph placeholder
+
+        // I-V Graph Placeholder
+        doc.text('Current vs Voltage (I-V) Curve:', 120, 275);
+        doc.setDrawColor(60);
+        doc.rect(120, 280, 80, 40);  // Rectangular box for I-V Graph placeholder
+
+        // Add footer or page number (optional)
+        doc.setFontSize(10);
+        doc.setTextColor(150);
+        doc.text('Report Generated by P&O MPPT Dashboard', 105, 295, null, null, 'center');
+        
+        // Save the PDF
+        doc.save('MPPT_Dashboard_Report.pdf');
+    });
 </script>
+
 
 </body>
 </html>
